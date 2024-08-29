@@ -104,5 +104,5 @@ This NIP proposes a decentralized voting protocol using the Nostr framework, ena
 
 Code
 Below is link to simple web app example code, viewable in any browser
-[here]([https://](https://github.com/therealsupermax/NostrVote/blob/main/voting_app.html))
+[here](https://github.com/therealsupermax/NostrVote/blob/main/voting_app.html)
 
