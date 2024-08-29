@@ -1,4 +1,4 @@
-*this has been discussed and attempte before. Please view other voting implementations on nostr [here]()
+*this has been discussed and attempte before. Please view other voting implementations on nostr [here](https://github.com/therealsupermax/NostrVote/blob/main/past%20nostr%20voting%20attempts.md)
 # NostrVote
 A possible cryptographic method over nostr which could improve current voting structures
 
