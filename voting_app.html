@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralized Voting App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+</head>
+<body>
+    <h1>Decentralized Voting Application</h1>
+    <div>
+        <h2>Generate Key Pair</h2>
+        <button id="generateKeys">Generate Keys</button>
+        <pre id="keysOutput"></pre>
+    </div>
+
+    <div>
+        <h2>Cast Your Vote</h2>
+        <label for="candidate">Candidate Public Key:</label>
+        <input type="text" id="candidate" placeholder="Enter candidate public key">
+        <button id="castVote">Cast Vote</button>
+        <pre id="voteOutput"></pre>
+    </div>
+
+    <div>
+        <h2>Voting Timer</h2>
+        <p id="timer">Time remaining: 5:00</p>
+        <p id="totalVotes">Total Votes: 0</p>
+    </div>
+
+    <script>
+        let privateKey, publicKey;
+        let totalVotes = 0;
+        let votingActive = true;
+        let timerDuration = 300; // 5 minutes in seconds
+
+        // Function to generate a simple key pair (for demonstration purposes)
+        function generateKeyPair() {
+            privateKey = CryptoJS.lib.WordArray.random(16).toString();
+            publicKey = CryptoJS.SHA256(privateKey).toString();
+            document.getElementById('keysOutput').innerText = `Public Key: ${publicKey}\nPrivate Key: ${privateKey}`;
+        }
+
+        // Function to cast a vote
+        function castVote() {
+            if (!votingActive) {
+                alert("Voting has ended.");
+                return;
+            }
+
+            const candidate = document.getElementById('candidate').value;
+            const timestamp = Math.floor(Date.now() / 1000);
+            const electionId = "election_2023";
+
+            // Create vote object
+            const vote = {
+                election_id: electionId,
+                candidate: candidate,
+                timestamp: timestamp,
+                signature: CryptoJS.HmacSHA256(`${electionId}${candidate}${timestamp}`, privateKey).toString()
+            };
+
+            // Display the vote object
+            document.getElementById('voteOutput').innerText = JSON.stringify(vote, null, 2);
+            totalVotes++;
+            document.getElementById('totalVotes').innerText = `Total Votes: ${totalVotes}`;
+            console.log("Vote to be broadcasted:", vote);
+        }
+
+        // Function to start the voting timer
+        function startVotingTimer() {
+            const timerElement = document.getElementById('timer');
+            const interval = setInterval(() => {
+                if (timerDuration <= 0) {
+                    clearInterval(interval);
+                    votingActive = false;
+                    timerElement.innerText = "Voting has ended.";
+                    return;
+                }
+                const minutes = Math.floor(timerDuration / 60);
+                const seconds = timerDuration % 60;
+                timerElement.innerText = `Time remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                timerDuration--;
+            }, 1000);
+        }
+
+        // Event listeners
+        document.getElementById('generateKeys').addEventListener('click', generateKeyPair);
+        document.getElementById('castVote').addEventListener('click', castVote);
+
+        // Start the voting timer when the page loads
+        window.onload = startVotingTimer;
+    </script>
+</body>
+</html>
